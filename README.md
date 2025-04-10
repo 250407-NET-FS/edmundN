@@ -4,7 +4,7 @@
 
 Executive Summary <br>
 ================================================================================<br>
-Capture your youtube engagement data for analysis by using data that provides valuable insight and response from your video,as an content creator I can provide engagement analysis youtube dosent share and can be found no where else. <br>
+Capture your youtube engagement data for analysis by using data that provides valuable insight and response from your video,as an content creator I can provide you engagement analysis youtube dosent share and can be found no where else. <br>
 
 ================================================================================<br>
 
