@@ -16,7 +16,7 @@ relationship
 ----------------- <br>
 many <---> many <br>
 -many users can upload the same video url saved in link history<br>
--many urls can be added by  the same urls saved in uploadedby<br>
+-many urls can be added by  the same user saved in uploadedby<br>
 
 
 (supabase ?)
