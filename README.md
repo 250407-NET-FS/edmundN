@@ -1,5 +1,7 @@
 # edmundN
 
+**Lazy Timestamper**
+
 This program aims to enhance user experience by extending a third-party API to incorporate advanced functionalities for video data management. Key features include the ability to save video metadata and their associated scraped data, enabling users to access and interact with the content more efficiently. By integrating these capabilities, we will provide a more seamless and optimized experience for users, ultimately driving engagement and satisfaction.
 
 ![Alt text](aa123.png)
@@ -12,7 +14,7 @@ application will have <br>
 
 relationship
 ----------------- <br>
-many <---> many
+many <---> many <br>
 -many users can upload the same video url saved in link history<br>
 -many urls can be added by  the same urls saved in uploadedby<br>
 
