@@ -7,6 +7,14 @@ Executive Summary <br>
 
 ================================================================================<br>
 
+## **CATURAN** <br>
+
+Executive Summary <br>
+================================================================================<br>
+**CATURAN** capture your youtube engagement data for analysis by using data that provides valuable insight and response from your video,as an content creator I can provide you engagement analysis youtube dosent share and can be found no where else. <br>
+
+================================================================================<br>
+
 This program aims to enhance user experience by extending a third-party API to incorporate advanced functionalities for video data management. Key features include the ability to save video metadata and their associated scraped data, enabling users to access and interact with the content more efficiently. By integrating these capabilities, we will provide a more seamless and optimized experience for users, ultimately driving engagement and satisfaction.
 
 ![Alt text](aa123.png)
