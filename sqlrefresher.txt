@@ -1,0 +1,43 @@
+-- SELECT *
+-- FROM Employee
+-- WHERE Title LIKE '%Sales%';
+
+-- SELECT DISTINCT BillingCountry
+-- FROM Invoice;
+
+-- SELECT * From Invoice WHERE InvoiceDate LIKE '%2022%';
+
+-- SELECT COUNT(*) AS CA FROM Invoice WHERE InvoiceId = 37;
+
+-- SELECT BillingCountry, COUNT(*) AS CA FROM Invoice GROUP BY BillingCountry ORDER BY CA DESC;
+
+-- Retrieve the total
+-- sales per country, ordered by the highest total sales first
+-- SELECT BillingCountry, SUM(Total) AS t
+-- FROM Invoice
+-- GROUP BY BillingCountry
+-- ORDER BY t DESC;
+
+-- JOINS CHALLENGES -- Every Album by Artist
+-- SELECT Artist.ArtistId AS ArtistId, Artist.Name AS ArtistName, Album.Title AS AlbumTitle
+-- FROM Artist
+-- JOIN Album ON Artist.ArtistId = Album.ArtistId
+-- ORDER BY ArtistName;
+
+-- All songs
+-- of the rock genre 
+-- set table alias "Track t"
+-- SELECT
+--     g.GenreId,
+--     t.Name AS TrackName
+-- FROM
+--     Track t
+--     JOIN
+--     Genre g ON t.GenreId = g.GenreId
+-- WHERE
+--     g.Name = 'Rock'
+-- ORDER BY
+--     t.Name;
+
+-- Show all invoices of customers from brazil
+-- select * from Customer where Country = 'Brazil';

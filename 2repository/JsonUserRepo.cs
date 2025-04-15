@@ -9,7 +9,7 @@ public class JsonUserRepo : IUserRepo
     private List<Users> _users;
     private string _filePath;
 
-    public JsonUserRepo(string filePath)
+    public JsonUserRepo()
     {
         _filePath = Path.Combine("./4data/users.json");
         _users = new List<Users>();

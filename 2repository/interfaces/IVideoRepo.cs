@@ -4,8 +4,10 @@ namespace repository;
 
 public interface IVideoRepo
 {
-    public List<Video> LoadVideos();
-    public Video addvideo(Video video);
-    public Video SaveVideos();
+    List<Video> LoadVideos();
+    Video addvideo(Video video);
+
+    Video GetByUrl(string url);
+    void SaveVideos();
 
 }

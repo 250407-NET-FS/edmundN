@@ -3,46 +3,90 @@ using modals;
 
 namespace repository;
 
-public class JsonHistoryRepo : IHistoryRepository
+public class JsonHistoryRepo : IHistoryRepo
 {
     private List<VideoHistory> _history;
-    private string _filePath;
+    private readonly string _filePath;
 
-    public JsonHistoryRepo(string filePath)
+    public JsonHistoryRepo()
     {
         _filePath = Path.Combine("./4data/history.json");
         _history = new List<VideoHistory>();
         LoadHistory();
     }
-    public List<VideoHistory> LoadHistory()
+
+    private void LoadHistory()
     {
         try
         {
             if (!File.Exists(_filePath))
             {
                 File.Create(_filePath).Close();
+                _history = new List<VideoHistory>();
+                return;
             }
-            using FileStream stream = File.OpenRead(_filePath);
-            return JsonSerializer.Deserialize<List<VideoHistory>>(stream) ?? new List<VideoHistory>();
 
+            using FileStream stream = File.OpenRead(_filePath);
+            _history = JsonSerializer.Deserialize<List<VideoHistory>>(stream) ?? new List<VideoHistory>();
         }
         catch
         {
-            throw new Exception("Error loading users from file");
+            throw new Exception("Error loading history from file");
         }
     }
-    public void SaveHistory()
+
+    private void SaveHistory()
     {
-        string json = JsonSerializer.Serialize(_history);
-        File.WriteAllText(_filePath, json);
-    }
-    public void updateHistory(VideoHistory history)
-    {
-        int index = _history.FindIndex(u => u.Url == history.Url);
-        if (index != -1)
+        try
         {
-            _history[index] = history;
-            SaveHistory();
+            string json = JsonSerializer.Serialize(_history);
+            File.WriteAllText(_filePath, json);
         }
+        catch
+        {
+            throw new Exception("Error saving history to file");
+        }
+    }
+
+    public void Add(VideoHistory videoHistory)
+    {
+        var existingEntry = GetEntry(videoHistory.Username, videoHistory.VideoUrl);
+        if (existingEntry != null)
+        {
+            existingEntry.WatchedAt = videoHistory.WatchedAt;
+        }
+        else
+        {
+            _history.Add(videoHistory);
+        }
+        SaveHistory();
+    }
+
+    public IEnumerable<VideoHistory> GetUserHistory(string username)
+    {
+        return _history.Where(h => h.Username == username)
+                      .OrderByDescending(h => h.WatchedAt)
+                      .ToList();
+    }
+
+    public void ClearUserHistory(string username)
+    {
+        _history.RemoveAll(h => h.Username == username);
+        SaveHistory();
+    }
+
+    public VideoHistory GetEntry(string username, string videoUrl)
+    {
+        return _history.FirstOrDefault(h =>
+            h.Username == username &&
+            h.VideoUrl == videoUrl);
+    }
+
+    public void Remove(VideoHistory videoHistory)
+    {
+        _history.RemoveAll(h =>
+            h.Username == videoHistory.Username &&
+            h.VideoUrl == videoHistory.VideoUrl);
+        SaveHistory();
     }
 }

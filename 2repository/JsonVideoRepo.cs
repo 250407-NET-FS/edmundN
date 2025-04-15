@@ -8,13 +8,13 @@ public class JsonVideoRepo : IVideoRepo
     private List<Video> _video;
     private string _filePath;
 
-    public JsonVideoRepo(string filePath)
+    public JsonVideoRepo()
     {
         _filePath = Path.Combine("./4data/videos.json");
         _video = new List<Video>();
         LoadVideos();
     }
-    public List<Users> LoadVideos()
+    public List<Video> LoadVideos()
     {
         try
         {
@@ -23,7 +23,7 @@ public class JsonVideoRepo : IVideoRepo
                 File.Create(_filePath).Close();
             }
             using FileStream stream = File.OpenRead(_filePath);
-            return JsonSerializer.Deserialize<List<Users>>(stream) ?? new List<Users>();
+            return JsonSerializer.Deserialize<List<Video>>(stream) ?? new List<Video>();
 
         }
         catch
@@ -48,5 +48,10 @@ public class JsonVideoRepo : IVideoRepo
         {
             throw new Exception("Error saving users to file");
         }
+    }
+
+    public Video GetByUrl(string url)
+    {
+        return _video.FirstOrDefault(v => v.Url == url);
     }
 }

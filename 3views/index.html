@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Video History</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .user-info {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .video-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .video-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .video-item h3 {
+            margin-top: 0;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="user-info" id="userInfo">
+            <!-- User info will be inserted here -->
+        </div>
+        <h2>Video History</h2>
+        <div class="video-list" id="videoList">
+            <!-- Video history will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const username = 'testuser';
+
+        async function loadUserAndHistory() {
+            try {
+                const response = await fetch(`/user/${username}/history`);
+                if (!response.ok) {
+                    throw new Error('User not found');
+                }
+                const data = await response.json();
+                displayUserInfo(data.user);
+                displayVideoHistory(data.videoHistory);
+            } catch (error) {
+                console.error('Error:', error);
+                document.body.innerHTML = `<div class="container"><p>Error: ${error.message}</p></div>`;
+            }
+        }
+
+        function displayUserInfo(user) {
+            const userInfo = document.getElementById('userInfo');
+            userInfo.innerHTML = `
+                <h2>${user.username}</h2>
+                <p>Email: ${user.email}</p>
+                <p>Member since: ${new Date(user.createdAt).toLocaleDateString()}</p>
+            `;
+        }
+
+        function displayVideoHistory(history) {
+            const videoList = document.getElementById('videoList');
+            if (history.length === 0) {
+                videoList.innerHTML = '<p>No videos in history</p>';
+                return;
+            }
+
+            videoList.innerHTML = history.map(video => `
+                <div class="video-item">
+                    <h3>${video.title || 'Untitled'}</h3>
+                    <a href="${video.videoUrl}" target="_blank">${video.videoUrl}</a>
+                    <p class="timestamp">
+                        Watched: ${new Date(video.watchedAt).toLocaleString()}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        // Load data when page loads
+        loadUserAndHistory();
+    </script>
+</body>
+
+</html>

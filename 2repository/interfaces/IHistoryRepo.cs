@@ -2,10 +2,11 @@ using modals;
 
 namespace repository;
 
-public interface IHistoryRepository
+public interface IHistoryRepo
 {
-    List<VideoHistory> LoadHistory();
-    void SaveHistory(List<VideoHistory> history);
-
-    void UpdateHistory(VideoHistory history);
+    void Add(VideoHistory videoHistory);
+    IEnumerable<VideoHistory> GetUserHistory(string username);
+    void ClearUserHistory(string username);
+    VideoHistory GetEntry(string username, string videoUrl);
+    void Remove(VideoHistory videoHistory);
 }
