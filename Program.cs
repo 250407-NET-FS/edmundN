@@ -36,7 +36,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 ;
-//===============================================================================================================//
+//=========================================================================================================================//
 
 app.MapPost("/adduser", (Users user, IUserRepo repo) =>
 {
@@ -46,11 +46,13 @@ app.MapPost("/adduser", (Users user, IUserRepo repo) =>
         {
             return Results.BadRequest("Username and email are required");
         }
-        else
+        if (repo.GetUser(user.Username) != null)
         {
-            repo.AddUser(user);
-            return Results.Ok("User added successfully");
+            return Results.BadRequest("Username already exists");
         }
+        user.Id = Guid.NewGuid();
+        repo.AddUser(user);
+        return Results.Created($"/user/{user.Username}", user);
     }
     catch (Exception ex)
     {
