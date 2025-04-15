@@ -50,7 +50,7 @@ public class JsonVideoRepo : IVideoRepo
         }
     }
 
-    public Video GetByUrl(string url)
+    public Video? GetByUrl(string url)
     {
         return _video.FirstOrDefault(v => v.Url == url);
     }

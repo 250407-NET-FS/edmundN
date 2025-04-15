@@ -27,6 +27,10 @@ public class JsonUserRepo : IUserRepo
     {
         return _users.Find(u => u.Username == username);
     }
+    public Users? GetByUsername(string username)
+    {
+        return _users.FirstOrDefault(u => u.Username == username);
+    }
 
     public void UpdateUser(Users user)
     {
