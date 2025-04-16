@@ -1,6 +1,6 @@
 using modals;
 using System.Text.Json;
-
+using System.IO;
 
 namespace repository;
 
@@ -27,6 +27,7 @@ public class JsonUserRepo : IUserRepo
     {
         return _users.Find(u => u.Username == username);
     }
+
     public Users? GetByUsername(string username)
     {
         return _users.FirstOrDefault(u => u.Username == username);
@@ -54,21 +55,33 @@ public class JsonUserRepo : IUserRepo
         {
             if (!File.Exists(_filePath))
             {
-                File.Create(_filePath).Close();
+                // Create the file if it does not exist
+                using (File.Create(_filePath)) { }
+                return new List<Users>();
             }
-            using FileStream stream = File.OpenRead(_filePath);
-            return JsonSerializer.Deserialize<List<Users>>(stream) ?? new List<Users>();
 
+            using FileStream stream = File.OpenRead(_filePath);
+            var users = JsonSerializer.Deserialize<List<Users>>(stream);
+            _users = users ?? new List<Users>();
+            return _users;
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("Error loading users from file");
+            throw new Exception($"Error loading users from file: {ex.Message}", ex);
         }
     }
 
     public void SaveUsers()
     {
-        string json = JsonSerializer.Serialize(_users);
-        File.WriteAllText(_filePath, json);
+        try
+        {
+            string json = JsonSerializer.Serialize(_users);
+            File.WriteAllText(_filePath, json);
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception($"Error saving users to file: {ex.Message}", ex);
+        }
     }
 }

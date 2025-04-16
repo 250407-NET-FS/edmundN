@@ -15,19 +15,20 @@ public class JsonHistoryRepo : IHistoryRepo
         LoadHistory();
     }
 
-    private void LoadHistory()
+    private List<VideoHistory> LoadHistory()
     {
         try
         {
             if (!File.Exists(_filePath))
             {
-                File.Create(_filePath).Close();
-                _history = new List<VideoHistory>();
-                return;
+                using (File.Create(_filePath)) { }
+                return new List<VideoHistory>();
             }
 
             using FileStream stream = File.OpenRead(_filePath);
-            _history = JsonSerializer.Deserialize<List<VideoHistory>>(stream) ?? new List<VideoHistory>();
+            var history = JsonSerializer.Deserialize<List<VideoHistory>>(stream);
+            _history = history ?? new List<VideoHistory>();
+            return _history;
         }
         catch
         {
