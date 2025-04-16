@@ -33,6 +33,12 @@ public class JsonVideoRepo : IVideoRepo
     }
     public Video addvideo(Video video)
     {
+
+        if (_video.Any(v => v.Url == video.Url))
+        {
+            return video;
+        }
+
         _video.Add(video);
         SaveVideos();
         return video;

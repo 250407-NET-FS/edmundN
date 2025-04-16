@@ -38,19 +38,27 @@ if (app.Environment.IsDevelopment())
 ;
 //=========================================================================================================================//
 
-app.MapPost("/adduser", (Users user, IUserRepo repo) =>
+app.MapPost("/adduser", (AddUserRequest request, IUserRepo repo) =>
 {
     try
     {
-        if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Email))
+        if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Email))
         {
             return Results.BadRequest("Username and email are required");
         }
-        if (repo.GetUser(user.Username) != null)
+
+        if (repo.GetUser(request.Username) != null)
         {
             return Results.BadRequest("Username already exists");
         }
-        user.Id = Guid.NewGuid();
+
+        var user = new Users
+        {
+            Id = Guid.NewGuid(),
+            Username = request.Username,
+            Email = request.Email
+        };
+
         repo.AddUser(user);
         return Results.Created($"/user/{user.Username}", user);
     }
@@ -60,6 +68,38 @@ app.MapPost("/adduser", (Users user, IUserRepo repo) =>
     }
 });
 
+app.MapPost("/user/{username}/history", async (string username, AddToHistoryRequest request, IHistoryService historyService) =>
+{
+    try
+    {
+        historyService.AddToHistory(username, request.VideoUrl, request.Title);
+        return Results.Ok("History entry added successfully.");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapPost("/addvideo", async (AddVideoRequest request, IVideoRepo videoRepo) =>
+{
+    try
+    {
+        var video = new Video
+        {
+            Url = request.Url,
+            Title = request.Title
+        };
+
+        videoRepo.addvideo(video);
+        return Results.Created($"/video/{video.Url}", video);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+//====================================================================================================
 app.MapGet("/getuser/{username}", (string username, IUserRepo repo) =>
 {
     try
@@ -103,7 +143,18 @@ app.MapGet("/user/{username}/history", async (string username, IUserRepo userRep
     }
 });
 
-
+app.MapGet("/users", (IUserRepo userRepo) =>
+{
+    try
+    {
+        var users = userRepo.LoadUsers();
+        return Results.Ok(users);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 
 // =============================================================================

@@ -30,7 +30,12 @@ public class HistoryService : IHistoryService
         }
         if (video == null)
         {
-            throw new ArgumentException($"Video with URL '{videoUrl}' not found");
+            video = new Video
+            {
+                Url = videoUrl,
+                Title = title
+            };
+            _VideoRepo.addvideo(video);
         }
 
         var videoHistory = new VideoHistory
