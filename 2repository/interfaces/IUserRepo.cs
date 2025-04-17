@@ -8,5 +8,6 @@ public interface IUserRepo
 
     List<Users> LoadUsers();
     void SaveUsers();
+    void DeleteUser(string username);
 
 }

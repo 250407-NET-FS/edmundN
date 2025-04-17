@@ -19,30 +19,25 @@ public class HistoryService : IHistoryService
         _HistoryRepo = historyRepo;
     }
 
-    public void AddToHistory(string username, string videoUrl, string title)
+    public void AddToHistory(string username, Guid videoId, string title)
     {
         var user = _UserRepo.GetUser(username);
-        var video = _VideoRepo.GetByUrl(videoUrl);
+        var video = _VideoRepo.GetById(videoId);
 
         if (user == null)
         {
-            throw new ArgumentException($"User '{username}' not found");
+            throw new ArgumentException($"User  '{username}' not found");
         }
         if (video == null)
         {
-            video = new Video
-            {
-                Url = videoUrl,
-                Title = title
-            };
-            _VideoRepo.addvideo(video);
+            throw new ArgumentException($"Video with ID '{videoId}' not found");
         }
 
         var videoHistory = new VideoHistory
         {
             Id = Guid.NewGuid(),
             Username = username,
-            VideoUrl = videoUrl,
+            VideoId = videoId,
             Title = title,
             AddedAt = DateTime.UtcNow,
             WatchedAt = DateTime.UtcNow
@@ -73,12 +68,12 @@ public class HistoryService : IHistoryService
         _HistoryRepo.ClearUserHistory(username);
     }
 
-    public void RemoveFromHistory(string username, string videoUrl)
+    public void RemoveFromHistory(string username, Guid videoId)
     {
-        var videoHistory = _HistoryRepo.GetEntry(username, videoUrl);
+        var videoHistory = _HistoryRepo.GetEntry(username, videoId);
         if (videoHistory == null)
         {
-            throw new ArgumentException($"History entry not found for user '{username}' and video '{videoUrl}'");
+            throw new ArgumentException($"History entry not found for user '{username}' and video '{videoId}'");
         }
 
         _HistoryRepo.Remove(videoHistory);

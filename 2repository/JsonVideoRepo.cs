@@ -11,9 +11,9 @@ public class JsonVideoRepo : IVideoRepo
     public JsonVideoRepo()
     {
         _filePath = Path.Combine("./4data/videos.json");
-        _video = new List<Video>();
-        LoadVideos();
+        _video = LoadVideos();
     }
+
     public List<Video> LoadVideos()
     {
         try
@@ -21,20 +21,26 @@ public class JsonVideoRepo : IVideoRepo
             if (!File.Exists(_filePath))
             {
                 File.Create(_filePath).Close();
+                return new List<Video>();
             }
             using FileStream stream = File.OpenRead(_filePath);
-            return JsonSerializer.Deserialize<List<Video>>(stream) ?? new List<Video>();
-
+            var videos = JsonSerializer.Deserialize<List<Video>>(stream);
+            return videos ?? new List<Video>();
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("Error loading users from file");
+            Console.WriteLine($"Error loading videos from file: {ex.Message}");
+            throw new Exception("Error loading videos from file");
         }
     }
     public Video addvideo(Video video)
     {
+        if (video.Id == Guid.Empty)
+        {
+            video.Id = Guid.NewGuid();
+        }
 
-        if (_video.Any(v => v.Url == video.Url))
+        if (_video.Any(v => v.Id == video.Id))
         {
             return video;
         }
@@ -56,8 +62,13 @@ public class JsonVideoRepo : IVideoRepo
         }
     }
 
-    public Video? GetByUrl(string url)
+    public Video GetById(Guid id)
     {
-        return _video.FirstOrDefault(v => v.Url == url);
+        return _video.FirstOrDefault(v => v.Id == id);
+    }
+
+    public List<Video> GetAll()
+    {
+        return _video;
     }
 }

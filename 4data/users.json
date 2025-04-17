@@ -1,1 +1,32 @@
-[{"Id":"e2a64c97-8b0f-4916-a260-784362cf18d0","Username":"string","CreatedAt":"2025-04-16T06:34:38.311Z","Email":"string","UserHistory":["string"]},{"Id":"d057c04f-f863-40a6-ad19-69e63ffc6d4a","Username":"t4","CreatedAt":"2025-04-16T04:43:22.1396622-05:00","Email":"t4","UserHistory":[]},{"Id":"e6ee4870-fe78-4770-b2d1-daafd28abe51","Username":"t5","CreatedAt":"2025-04-16T04:43:36.5822146-05:00","Email":"t5","UserHistory":[]}]
+[
+    {
+        "Id": "01e22ca4-6a8f-43d0-b069-5e4d670c83aa",
+        "Username": "john_doe",
+        "CreatedAt": "2023-01-01T10:00:00Z",
+        "Email": "john.doe@example.com"
+    },
+    {
+        "Id": "02b33db5-7b9a-44e1-c17a-6f5e781d94bb",
+        "Username": "jane_smith",
+        "CreatedAt": "2023-01-02T11:30:00Z",
+        "Email": "jane.smith@example.com"
+    },
+    {
+        "Id": "03c44ec6-8c0b-55f2-d28b-7a6f892ea5cc",
+        "Username": "alex_wilson",
+        "CreatedAt": "2023-01-03T09:15:00Z",
+        "Email": "alex.wilson@example.com"
+    },
+    {
+        "Id": "04d55fd7-9d1c-66a3-e39c-8b7a9a3fb6dd",
+        "Username": "sara_miller",
+        "CreatedAt": "2023-01-04T14:45:00Z",
+        "Email": "sara.miller@example.com"
+    },
+    {
+        "Id": "05e66ae8-0e2d-77b4-f40d-9c8b0b4ac7ee",
+        "Username": "mike_jones",
+        "CreatedAt": "2023-01-05T16:20:00Z",
+        "Email": "mike.jones@example.com"
+    }
+]

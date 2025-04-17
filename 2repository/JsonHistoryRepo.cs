@@ -10,7 +10,14 @@ public class JsonHistoryRepo : IHistoryRepo
 
     public JsonHistoryRepo()
     {
-        _filePath = Path.Combine("./4data/history.json");
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "4data");
+        _filePath = Path.Combine(directoryPath, "history.json");
+
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
         _history = new List<VideoHistory>();
         LoadHistory();
     }
@@ -21,18 +28,38 @@ public class JsonHistoryRepo : IHistoryRepo
         {
             if (!File.Exists(_filePath))
             {
-                using (File.Create(_filePath)) { }
+                File.WriteAllText(_filePath, "[]");
                 return new List<VideoHistory>();
             }
 
-            using FileStream stream = File.OpenRead(_filePath);
-            var history = JsonSerializer.Deserialize<List<VideoHistory>>(stream);
+            string json = File.ReadAllText(_filePath);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                File.WriteAllText(_filePath, "[]");
+                return new List<VideoHistory>();
+            }
+
+            var history = JsonSerializer.Deserialize<List<VideoHistory>>(json);
             _history = history ?? new List<VideoHistory>();
             return _history;
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("Error loading history from file");
+            Console.WriteLine($"Error loading history: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+            try
+            {
+                File.WriteAllText(_filePath, "[]");
+                _history = new List<VideoHistory>();
+                return _history;
+            }
+            catch (Exception resetEx)
+            {
+                Console.WriteLine($"Failed to reset history file: {resetEx.Message}");
+                throw new Exception($"Error loading history from file: {ex.Message}", ex);
+            }
         }
     }
 
@@ -51,7 +78,7 @@ public class JsonHistoryRepo : IHistoryRepo
 
     public void Add(VideoHistory videoHistory)
     {
-        var existingEntry = GetEntry(videoHistory.Username, videoHistory.VideoUrl);
+        var existingEntry = GetEntry(videoHistory.Username, videoHistory.VideoId);
         if (existingEntry != null)
         {
             existingEntry.WatchedAt = videoHistory.WatchedAt;
@@ -76,18 +103,23 @@ public class JsonHistoryRepo : IHistoryRepo
         SaveHistory();
     }
 
-    public VideoHistory GetEntry(string username, string videoUrl)
+    public VideoHistory GetEntry(string username, Guid videoId)
     {
         return _history.FirstOrDefault(h =>
             h.Username == username &&
-            h.VideoUrl == videoUrl);
+            h.VideoId == videoId);
     }
 
     public void Remove(VideoHistory videoHistory)
     {
         _history.RemoveAll(h =>
             h.Username == videoHistory.Username &&
-            h.VideoUrl == videoHistory.VideoUrl);
+            h.VideoId == videoHistory.VideoId);
         SaveHistory();
+    }
+
+    public IEnumerable<VideoHistory> GetAllHistory()
+    {
+        return _history.ToList();
     }
 }

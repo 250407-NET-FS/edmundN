@@ -21,9 +21,8 @@ This program aims to enhance user experience by extending a third-party API to i
 
 application will have <br>
 
--post to push a url to the api <br>
--get will respond with server status <br>
--delete remove from json list a video entry <br>
+
+-delete user <br>
 
 relationship
 ----------------- <br>
