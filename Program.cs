@@ -69,13 +69,25 @@ app.MapPost("/adduser", (AddUserRequest request, IUserRepo repo) =>
 });
 
 
-//not working
-app.MapPost("/user/{username}/history", (string username, AddToHistoryRequest request, IHistoryService historyService) =>
+
+app.MapPost("/user/{username}/history", (string username, AddToHistoryRequest request, IHistoryService historyService, IVideoRepo videoRepo) =>
 {
     try
     {
-        historyService.AddToHistory(username, request.VideoId, request.Title);
-        return Results.Ok("History entry added successfully.");
+        var video = videoRepo.GetById(request.VideoId);
+        if (video == null)
+        {
+            return Results.NotFound($"Video with ID '{request.VideoId}' not found");
+        }
+
+        historyService.AddToHistory(username, request.VideoId);
+        return Results.Ok(new
+        {
+            Message = "History entry added successfully.",
+            Username = username,
+            VideoId = request.VideoId,
+            VideoTitle = video.Title
+        });
     }
     catch (Exception ex)
     {
@@ -100,7 +112,7 @@ app.MapGet("/getuser/{username}", (string username, IUserRepo repo) =>
     }
 });
 
-//not working
+
 app.MapGet("/user/{username}/history", (string username, IUserRepo userRepo, IHistoryService historyService) =>
 {
     try
@@ -139,7 +151,7 @@ app.MapGet("/users", (IUserRepo userRepo) =>
     }
 });
 
-//not working
+
 app.MapGet("/videos", (IVideoRepo videoRepo) =>
 {
     try
@@ -153,24 +165,6 @@ app.MapGet("/videos", (IVideoRepo videoRepo) =>
     }
 });
 
-
-//not working
-app.MapGet("/user/{username}/videos", async (string username, IHistoryRepo historyRepo) =>
-{
-    try
-    {
-        var history = historyRepo.GetUserHistory(username);
-        if (!history.Any())
-        {
-            return Results.NotFound($"No videos found for user '{username}'");
-        }
-        return Results.Ok(history);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
-});
 
 app.MapGet("/video/{videoId}", (Guid videoId, IVideoRepo videoRepo, IHistoryRepo historyRepo) =>
 {
@@ -241,6 +235,51 @@ app.MapDelete("/user/{username}", (string username, IUserRepo repo) =>
     }
 });
 
+app.MapGet("/video/{videoId}/users", (Guid videoId, IHistoryRepo historyRepo, IUserRepo userRepo) =>
+{
+    try
+    {
+        // Get all history entries for this video
+        var allHistory = historyRepo.GetAllHistory();
+        var historyEntries = allHistory.Where(h => h.VideoId == videoId).ToList();
 
+        if (!historyEntries.Any())
+        {
+            return Results.NotFound($"No users found who have watched video with ID '{videoId}'");
+        }
+        //unique usernames
+        var usernames = historyEntries.Select(h => h.Username).Distinct().ToList();
+
+        var users = usernames
+            .Select(username => userRepo.GetUser(username))
+            .Where(user => user != null)
+            .ToList();
+
+        var response = users.Select(user => new
+        {
+            User = user,
+            WatchHistory = historyEntries
+                .Where(h => h.Username == user.Username)
+                .OrderByDescending(h => h.WatchedAt)
+                .Select(h => new
+                {
+                    h.WatchedAt,
+                    h.AddedAt
+                })
+                .ToList()
+        }).ToList();
+
+        return Results.Ok(new
+        {
+            VideoId = videoId,
+            UserCount = users.Count,
+            Users = response
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.Run();

@@ -19,7 +19,7 @@ public class HistoryService : IHistoryService
         _HistoryRepo = historyRepo;
     }
 
-    public void AddToHistory(string username, Guid videoId, string title)
+    public void AddToHistory(string username, Guid videoId)
     {
         var user = _UserRepo.GetUser(username);
         var video = _VideoRepo.GetById(videoId);
@@ -38,7 +38,7 @@ public class HistoryService : IHistoryService
             Id = Guid.NewGuid(),
             Username = username,
             VideoId = videoId,
-            Title = title,
+            Title = video.Title,
             AddedAt = DateTime.UtcNow,
             WatchedAt = DateTime.UtcNow
         };
