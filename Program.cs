@@ -152,6 +152,24 @@ app.MapGet("/users", (IUserRepo userRepo) =>
     }
 });
 
+app.MapDelete("/user/{username}", (string username, IUserRepo repo) =>
+{
+    try
+    {
+        var user = repo.GetUser(username);
+        if (user == null)
+        {
+            return Results.NotFound($"User  '{username}' not found");
+        }
+
+        repo.DeleteUser(username);
+        return Results.Ok($"User  '{username}' has been deleted successfully.");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.MapGet("/videos", (IVideoRepo videoRepo) =>
 {
@@ -215,25 +233,6 @@ app.MapPost("/addvideo", (AddVideoRequest request, IVideoRepo videoRepo) =>
             Video = video,
             AllVideos = updatedVideos
         });
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
-});
-
-app.MapDelete("/user/{username}", (string username, IUserRepo repo) =>
-{
-    try
-    {
-        var user = repo.GetUser(username);
-        if (user == null)
-        {
-            return Results.NotFound($"User  '{username}' not found");
-        }
-
-        repo.DeleteUser(username);
-        return Results.Ok($"User  '{username}' has been deleted successfully.");
     }
     catch (Exception ex)
     {
