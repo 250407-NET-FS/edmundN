@@ -209,7 +209,12 @@ app.MapPost("/addvideo", (AddVideoRequest request, IVideoRepo videoRepo) =>
         };
 
         videoRepo.addvideo(video);
-        return Results.Created($"/video/{video.Id}", video);
+        var updatedVideos = videoRepo.LoadVideos();
+        return Results.Created($"/video/{video.Id}", new
+        {
+            Video = video,
+            AllVideos = updatedVideos
+        });
     }
     catch (Exception ex)
     {
