@@ -1,3 +1,4 @@
+
 using modals;
 using repository;
 using services;
@@ -282,4 +283,6 @@ app.MapGet("/video/{videoId}/users", (Guid videoId, IHistoryRepo historyRepo, IU
     }
 });
 
+
 app.Run();
+public partial class Program { }
