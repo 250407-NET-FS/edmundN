@@ -41,3 +41,97 @@
 
 -- Show all invoices of customers from brazil
 -- select * from Customer where Country = 'Brazil';
+
+SELECT
+    i.InvoiceId,
+    i.InvoiceDate,
+    c.CustomerId,
+    c.FirstName + ' ' + c.LastName AS 'Customer',
+    e.FirstName + ' ' + e.LastName AS 'Sales Agent'
+FROM
+    Invoice i
+    JOIN
+    Customer c ON i.CustomerId = c.CustomerId
+    JOIN
+    Employee e ON c.SupportRepId = e.EmployeeId
+
+--Which sales agent made the most sales in 2009?
+
+SELECT
+    e.EmployeeId,
+    e.FirstName + ' ' + e.LastName AS SalesAgent,
+    COUNT(i.InvoiceId) AS TotalSales,
+    SUM(i.Total) AS TotalRevenue
+FROM
+    Invoice i
+    JOIN Customer c ON i.CustomerId = c.CustomerId
+    JOIN Employee e ON c.SupportRepId = e.EmployeeId
+WHERE 
+    YEAR(i.InvoiceDate) = 2021
+GROUP BY 
+    e.EmployeeId, e.FirstName, e.LastName
+ORDER BY 
+    TotalSales DESC;
+
+--How many customers are assigned to each sales agent?
+
+select count(c.CustomerID) as 'Number of Customers', e.FirstName, e.LastName
+from Customer c
+join Employee e
+on c.SupportRepId = e.EmployeeId
+group by e.FirstName, e.LastName
+
+
+-- Which track was purchased the most in 2010?
+SELECT TOP 1 t.Name, sum(il.Quantity) AS TotalQuantitySold
+FROM Track t
+JOIN InvoiceLine il ON t.TrackId = il.TrackId
+JOIN Invoice i ON il.InvoiceId = i.InvoiceId
+WHERE YEAR(i.InvoiceDate) = 2021
+GROUP BY t.Name
+ORDER BY SUM(il.Quantity) DESC;
+
+-- Show the top three best selling artists.
+SELECT TOP 3
+    artists.Name, SUM(Quantity)
+FROM Artist artists
+    JOIN Album album ON artists.ArtistId = album.ArtistId
+    JOIN Track t ON album.AlbumId = t.AlbumId
+    JOIN InvoiceLine il ON t.TrackId = il.TrackId
+GROUP BY artists.ArtistId, artists.Name
+ORDER BY SUM(il.Quantity) DESC;
+
+-- Which customers have the same initials as at least one other customer?
+WITH
+    CustomerInitials
+    AS
+    (
+        SELECT
+            FirstName,
+            LastName,
+            LEFT(FirstName, 1) + LEFT(LastName, 1) AS Initials
+        FROM Customer
+    )
+SELECT
+    c.FirstName,
+    c.LastName
+FROM CustomerInitials c
+WHERE EXISTS (
+    SELECT 1
+FROM CustomerInitials ci
+WHERE ci.Initials = c.Initials
+    AND (ci.FirstName != c.FirstName OR ci.LastName != c.LastName)
+);
+
+-- DML exercises
+INSERT INTO Employee (EmployeeId, LastName, FirstName) VALUES ('999999', 'j', 'j'),
+('888888', 'a', 'j');
+
+INSERT INTO Track(TrackId, Name, MediaTypeId, Milliseconds, UnitPrice) VALUES ('999999', 'a track', 9, 999, 0.99),
+('8888', 'b track', 8, 888, 0.88);
+
+UPDATE Customer SET FirstName = 'Robert', LastName = 'Walter' WHERE FirstName = 'Aaron' AND LastName = 'Mitchell';
+
+DELETE FROM Employee WHERE FirstName = 'j' AND LastName = 'j';
+
+DELETE FROM Customer WHERE FirstName = 'Robert' AND LastName = 'Walter';
