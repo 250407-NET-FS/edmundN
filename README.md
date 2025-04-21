@@ -1,16 +1,10 @@
 # edmundN
 
-Executive Summary <br>
-================================================================================<br>
-**CATURAN** captures your youtube engagement data for analysis by using data that provides valuable insight and response from your video,as an content creator I can provide you engagement analysis youtube dosent share and can be found no where else. <br>
-
-================================================================================<br>
-
 ## **CATURAN** <br>
 
 Executive Summary <br>
 ================================================================================<br>
-**CATURAN** capture your youtube engagement data for analysis by using data that provides valuable insight and response from your video,as an content creator I can provide you engagement analysis youtube dosent share and can be found no where else. <br>
+**CATURAN** CATURAN captures Youtube engagement data for analysis to allow content creators to gain insight beyond Youtube's provided analytics. <br>
 
 ================================================================================<br>
 
@@ -19,6 +13,7 @@ This program aims to enhance user experience by extending a third-party API to i
 <br>
 <br>
 ![Alt text](aa123.png)
+<br>
 <br>
 application will have 
 ====================== <br>
